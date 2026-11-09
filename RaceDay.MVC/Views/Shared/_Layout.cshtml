@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RaceDay.MVC</title>
+    <title>@ViewData["Title"] - RaceDay</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RaceDay.MVC.styles.css" asp-append-version="true" />
@@ -39,7 +39,7 @@
                             @if (Context.Session.GetString("UserRole") == "Organiser")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Organiser" asp-action="MyEvents">My Events</a>
+                                    <a class="nav-link text-dark fw-bold text-danger" asp-controller="Organiser" asp-action="MyEvents">My Events</a>
                                 </li>
                             }
 
