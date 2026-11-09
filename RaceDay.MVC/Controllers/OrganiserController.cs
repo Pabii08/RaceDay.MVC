@@ -73,5 +73,39 @@ namespace RaceDay.MVC.Controllers
 
             return View(events);
         }
+        [HttpGet]
+        public async Task<IActionResult> EventDetails(int id)
+        {
+            if (HttpContext.Session.GetString("UserRole") != "Organiser")
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var client = _httpClientFactory.CreateClient("RaceDayAPI");
+
+            // 1. Get the event details (optional, but good for the header)
+            var eventResponse = await client.GetAsync($"api/events/{id}");
+            var eventItem = new EventViewModel();
+            if (eventResponse.IsSuccessStatusCode)
+            {
+                var json = await eventResponse.Content.ReadAsStringAsync();
+                eventItem = JsonSerializer.Deserialize<EventViewModel>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new EventViewModel();
+            }
+
+            // 2. Get the enrolments for this event
+            var enrolResponse = await client.GetAsync($"api/enrolments/event/{id}");
+            var enrolments = new List<dynamic>(); // Using dynamic for quick parsing
+
+            if (enrolResponse.IsSuccessStatusCode)
+            {
+                var json = await enrolResponse.Content.ReadAsStringAsync();
+                enrolments = JsonSerializer.Deserialize<List<dynamic>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<dynamic>();
+            }
+
+            ViewBag.EventName = eventItem.Name;
+            ViewBag.EventId = id;
+
+            return View(enrolments);
+        }
     }
 }
