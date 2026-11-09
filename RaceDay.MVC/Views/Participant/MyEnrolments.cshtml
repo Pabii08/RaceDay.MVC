@@ -1,0 +1,16 @@
+﻿@foreach (var enrolment in Model)
+{
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">@enrolment.Event.Name</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Date:</strong> @enrolment.Event.Date.ToString("dd MMM yyyy")</p>
+                <p><strong>Category:</strong> @enrolment.Category.Name</p>
+                <p><strong>Enrolled On:</strong> @enrolment.EnrolmentDate.ToString("dd MMM yyyy")</p>
+                <span class="badge bg-success">Confirmed</span>
+            </div>
+        </div>
+    </div>
+}

@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="Views\Organiser\MyEvents.cshtml" />
+  </ItemGroup>
+
 </Project>

@@ -14,91 +14,92 @@ namespace RaceDay.MVC.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        // GET: Participant Dashboard
+        // --- 1. DASHBOARD (SHOW EVENTS) ---
         public async Task<IActionResult> Index()
         {
             if (HttpContext.Session.GetString("UserRole") != "Participant")
-            {
                 return RedirectToAction("Login", "Account");
-            }
 
             var client = _httpClientFactory.CreateClient("RaceDayAPI");
             var response = await client.GetAsync("api/events");
-
             var events = new List<EventViewModel>();
 
             if (response.IsSuccessStatusCode)
             {
-                var jsonString = await response.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                events = JsonSerializer.Deserialize<List<EventViewModel>>(jsonString, options) ?? new List<EventViewModel>();
+                var json = await response.Content.ReadAsStringAsync();
+                events = JsonSerializer.Deserialize<List<EventViewModel>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<EventViewModel>();
             }
-            else
-            {
-                ViewBag.Error = "Failed to load events. API Status: " + response.StatusCode;
-            }
-
             return View(events);
         }
 
-        // POST: Enrol in an event
+        // --- 2. ENROL ---
         [HttpPost]
         public async Task<IActionResult> Enrol(int eventId, int categoryId)
         {
             if (HttpContext.Session.GetString("UserRole") != "Participant")
-            {
                 return RedirectToAction("Login", "Account");
-            }
 
             var client = _httpClientFactory.CreateClient("RaceDayAPI");
-
-            var enrolData = new
-            {
-                EventId = eventId,
-                CategoryId = categoryId
-            };
-
+            var enrolData = new { EventId = eventId, CategoryId = categoryId };
             var jsonContent = new StringContent(JsonSerializer.Serialize(enrolData), Encoding.UTF8, "application/json");
+
             var response = await client.PostAsync("api/enrolments", jsonContent);
 
             if (response.IsSuccessStatusCode)
-            {
                 TempData["SuccessMessage"] = "Successfully enrolled!";
-            }
             else
-            {
-                TempData["ErrorMessage"] = "Failed to enrol. You might already be enrolled.";
-            }
+                TempData["ErrorMessage"] = "Failed to enrol.";
 
             return RedirectToAction("Index");
         }
 
-        // GET: My Enrolments
+        // --- 3. MY ENROLMENTS ---
         [HttpGet]
         public async Task<IActionResult> MyEnrolments()
         {
             if (HttpContext.Session.GetString("UserRole") != "Participant")
-            {
                 return RedirectToAction("Login", "Account");
-            }
 
             var client = _httpClientFactory.CreateClient("RaceDayAPI");
             var response = await client.GetAsync("api/enrolments/my-enrolments");
-
             var enrolments = new List<EnrolmentViewModel>();
 
             if (response.IsSuccessStatusCode)
             {
-                var jsonString = await response.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                enrolments = JsonSerializer.Deserialize<List<EnrolmentViewModel>>(jsonString, options) ?? new List<EnrolmentViewModel>();
+                var json = await response.Content.ReadAsStringAsync();
+                // Let the deserializer do the heavy lifting
+                enrolments = JsonSerializer.Deserialize<List<EnrolmentViewModel>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<EnrolmentViewModel>();
             }
             else
             {
-                ViewBag.Error = "Failed to load enrolments. API Status: " + response.StatusCode;
+                ViewBag.Error = "API Error: " + response.StatusCode;
             }
 
             return View(enrolments);
+        }
+
+        // --- 4. MY RESULTS ---
+        [HttpGet]
+        public async Task<IActionResult> MyResults()
+        {
+            if (HttpContext.Session.GetString("UserRole") != "Participant")
+                return RedirectToAction("Login", "Account");
+
+            var client = _httpClientFactory.CreateClient("RaceDayAPI");
+            var response = await client.GetAsync("api/results/my-results");
+            var results = new List<ResultViewModel>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                results = JsonSerializer.Deserialize<List<ResultViewModel>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<ResultViewModel>();
+            }
+            else
+            {
+                ViewBag.Error = "API Error: " + response.StatusCode;
+            }
+
+            return View(results);
         }
     }
 }

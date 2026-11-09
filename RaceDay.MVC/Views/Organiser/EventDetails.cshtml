@@ -1,0 +1,63 @@
+﻿@model RaceDay.MVC.Models.EventDetailsViewModel
+
+@{
+    ViewData["Title"] = "Event Details";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="text-danger">Manage: @Model.EventName</h2>
+        <a asp-action="MyEvents" class="btn btn-outline-secondary">Back to My Events</a>
+    </div>
+    <hr />
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <h4 class="mt-4 mb-3">Enrolled Participants</h4>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover shadow-sm align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Participant</th>
+                    <th>Category</th>
+                    <th>Capture Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Enrolments.Count == 0)
+                {
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-4">No participants have enrolled yet.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model.Enrolments)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.ParticipantName</strong><br />
+                                <small class="text-muted">@item.ParticipantEmail</small>
+                            </td>
+                            <td>@item.CategoryName</td>
+                            <td>
+                                <form asp-action="CaptureResult" method="post" class="d-flex gap-2">
+                                    <input type="hidden" name="enrolmentId" value="@item.EnrolmentId" />
+
+                                    <input type="text" name="time" class="form-control form-control-sm" placeholder="e.g. 01:45:30" required style="width: 120px;" />
+                                    <input type="number" name="position" class="form-control form-control-sm" placeholder="Pos" required style="width: 70px;" />
+
+                                    <button type="submit" class="btn btn-sm btn-danger">Save</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
