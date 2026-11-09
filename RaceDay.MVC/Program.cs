@@ -12,9 +12,19 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpClient("RaceDayAPI", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7094/");
+    var apiUrl = builder.Configuration["ApiBaseUrl"] ?? "https://localhost:7094/";
+    client.BaseAddress = new Uri(apiUrl);
     client.DefaultRequestHeaders.Accept.Add(
         new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    return new HttpClientHandler
+    {
+        UseCookies = true,
+        CookieContainer = new System.Net.CookieContainer(),
+        ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+    };
 });
 
 var app = builder.Build();

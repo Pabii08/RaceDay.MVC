@@ -28,6 +28,14 @@
                             <li class="nav-item">
                                 <span class="nav-link text-dark fw-bold">Hello, @Context.Session.GetString("UserName") (@Context.Session.GetString("UserRole"))</span>
                             </li>
+
+                            @if (Context.Session.GetString("UserRole") == "Participant")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Participant" asp-action="MyEnrolments">My Enrolments</a>
+                                </li>
+                            }
+
                             <li class="nav-item">
                                 <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                                     <button type="submit" class="btn btn-link nav-link text-danger">Logout</button>
