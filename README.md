@@ -1,19 +1,11 @@
 # RaceDay Full-Stack Application (PROG6212 Part 3)
 
-This repository contains the complete full-stack RaceDay platform, developed as part of the PROG6212 Portfolio of Evidence.
+This project is the complete full-stack RaceDay platform, developed for the PROG6212 Portfolio of Evidence. It consists of a backend RESTful API and a frontend ASP.NET Core MVC application, both fully containerized using Docker.
 
-The system consists of a RESTful API (Part 2) and an ASP.NET Core MVC frontend (Part 3), fully containerized using Docker.
-
----
-
-## Table of Contents
-- [Technologies Used](#technologies-used)
-- [User Roles](#user-roles)
-- [Running the Application Locally](#running-the-application-locally)
-- [Running with Docker](#running-with-docker)
-- [Image Storage (Blob Simulation)](#image-storage-blob-simulation)
-- [Testing & CI/CD](#testing--cicd)
-- [YouTube Demonstration](#youtube-demonstration)
+**Important Note for the Lecturer:** 
+Because this is a full-stack application, the code is split into two separate repositories. 
+- **API Repository:** [https://github.com/Pabii08/RaceDay.API](API-GITHUB-LINK)
+- **MVC Repository:** [https://github.com/Pabii08/RaceDay.MVC](MVC-GITHUB-LINK)
 
 ---
 
@@ -31,7 +23,7 @@ The system consists of a RESTful API (Part 2) and an ASP.NET Core MVC frontend (
 ### Organiser
 - Register and log in.
 - Create events (with name, description, date, location, distance, type).
-- Upload event banner images.
+- Upload event banner images (Simulated Blob Storage).
 - View all enrolments for their specific events.
 - Capture participant results.
 
@@ -44,20 +36,19 @@ The system consists of a RESTful API (Part 2) and an ASP.NET Core MVC frontend (
 
 ---
 
-## Running the Application Locally
+## Running the Application Locally (Without Docker)
 
-### Prerequisites
-- .NET 8 SDK
-- SQL Server (LocalDB)
-- Visual Studio 2022
+To run the full application locally, you must run both projects at the same time.
 
-### Steps
-1. Open the `RaceDay.FullStack.sln` solution in Visual Studio.
-2. Right-click the Solution -> **Configure Startup Projects** -> Select **Multiple startup projects**.
-3. Set both `Raceday.API` and `RaceDay.MVC` to **Start**.
-4. Press **Run** (F5). 
-5. The API will open Swagger at `https://localhost:7094/swagger`.
-6. The MVC frontend will open at `https://localhost:xxxx`.
+**Step 1: Start the API**
+1. Open the API repository in Visual Studio.
+2. Open the Package Manager Console and run `Update-Database` to ensure the SQL database is created.
+3. Press **Run** (F5). Swagger will open at `https://localhost:7094/swagger`. Keep this running.
+
+**Step 2: Start the MVC App**
+1. Open the MVC repository in a second Visual Studio window.
+2. Press **Run** (F5). The frontend will open in your browser (e.g., `https://localhost:7024`).
+3. You can now register, log in, and use the application.
 
 ---
 
@@ -65,9 +56,12 @@ The system consists of a RESTful API (Part 2) and an ASP.NET Core MVC frontend (
 
 The application is fully containerized. The MVC app and the API run in separate containers and communicate over a Docker network.
 
+### Prerequisites
+- Docker Desktop installed and running.
+
 ### Steps
-1. Ensure **Docker Desktop** is installed and running.
-2. Open a terminal (PowerShell or Command Prompt) in the root directory (where `docker-compose.yml` is located).
+1. Ensure both repositories are cloned into the same parent folder on your computer.
+2. Open a terminal (PowerShell or Command Prompt) in the root directory (where the `docker-compose.yml` file is located).
 3. Run the following command to build and start the containers:
    ```bash
    docker compose up --build
