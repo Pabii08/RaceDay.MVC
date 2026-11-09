@@ -11,6 +11,11 @@
     </div>
     <hr />
 
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
     <div class="row">
         @if (!Model.Any())
         {
@@ -28,7 +33,9 @@
                         <div class="card-body">
                             <p><strong>Date:</strong> @ev.Date.ToString("dd MMM yyyy")</p>
                             <p><strong>Location:</strong> @ev.Location</p>
-                            <a asp-action="EventDetails" asp-route-id="@ev.EventId" class="btn btn-outline-danger w-100">Manage Event & View Enrolments</a>
+                            <p><strong>Distance:</strong> @ev.Distance km</p>
+
+                            <a asp-action="EventDetails" asp-route-id="@ev.EventId" class="btn btn-outline-danger w-100 mt-2">Manage Event & View Enrolments</a>
                         </div>
                     </div>
                 </div>

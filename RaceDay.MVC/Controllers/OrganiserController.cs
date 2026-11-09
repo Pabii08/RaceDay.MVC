@@ -20,7 +20,6 @@ namespace RaceDay.MVC.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
-
             return View();
         }
 
@@ -46,12 +45,14 @@ namespace RaceDay.MVC.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index"); // Go back to dashboard
+                return RedirectToAction("Index");
             }
 
-            ViewBag.Error = "Failed to create event. Make sure all fields are correct.";
+            ViewBag.Error = "Failed to create event.";
             return View(model);
         }
+
+        // --- Make sure this only appears ONCE ---
         public async Task<IActionResult> MyEvents()
         {
             if (HttpContext.Session.GetString("UserRole") != "Organiser")
@@ -70,9 +71,15 @@ namespace RaceDay.MVC.Controllers
                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 events = JsonSerializer.Deserialize<List<EventViewModel>>(jsonString, options) ?? new List<EventViewModel>();
             }
+            else
+            {
+                ViewBag.Error = "Failed to load events.";
+            }
 
             return View(events);
         }
+        // ----------------------------------------
+
         [HttpGet]
         public async Task<IActionResult> EventDetails(int id)
         {
@@ -83,7 +90,6 @@ namespace RaceDay.MVC.Controllers
 
             var client = _httpClientFactory.CreateClient("RaceDayAPI");
 
-            // 1. Get the event details (optional, but good for the header)
             var eventResponse = await client.GetAsync($"api/events/{id}");
             var eventItem = new EventViewModel();
             if (eventResponse.IsSuccessStatusCode)
@@ -92,9 +98,8 @@ namespace RaceDay.MVC.Controllers
                 eventItem = JsonSerializer.Deserialize<EventViewModel>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new EventViewModel();
             }
 
-            // 2. Get the enrolments for this event
             var enrolResponse = await client.GetAsync($"api/enrolments/event/{id}");
-            var enrolments = new List<dynamic>(); // Using dynamic for quick parsing
+            var enrolments = new List<dynamic>();
 
             if (enrolResponse.IsSuccessStatusCode)
             {
