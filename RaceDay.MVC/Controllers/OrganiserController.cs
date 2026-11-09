@@ -52,5 +52,26 @@ namespace RaceDay.MVC.Controllers
             ViewBag.Error = "Failed to create event. Make sure all fields are correct.";
             return View(model);
         }
+        public async Task<IActionResult> MyEvents()
+        {
+            if (HttpContext.Session.GetString("UserRole") != "Organiser")
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var client = _httpClientFactory.CreateClient("RaceDayAPI");
+            var response = await client.GetAsync("api/events");
+
+            var events = new List<EventViewModel>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                events = JsonSerializer.Deserialize<List<EventViewModel>>(jsonString, options) ?? new List<EventViewModel>();
+            }
+
+            return View(events);
+        }
     }
 }
