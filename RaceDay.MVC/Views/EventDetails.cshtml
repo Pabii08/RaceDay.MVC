@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Event Details";
+    var eventName = ViewBag.EventName as string;
+    var eventId = ViewBag.EventId;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="text-danger">Manage: @eventName</h2>
+        <a asp-action="MyEvents" class="btn btn-outline-secondary">Back to My Events</a>
+    </div>
+    <hr />
+
+    <h4 class="mt-4 mb-3">Enrolled Participants</h4>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Participant Name</th>
+                    <th>Email</th>
+                    <th>Category</th>
+                    <th>Enrolled On</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">No participants have enrolled yet.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <!-- We use dynamic parsing here to read the JSON properties -->
+                            <td>@item.user.name</td>
+                            <td>@item.user.email</td>
+                            <td>@item.category.name</td>
+                            <td>@item.enrolmentDate</td>
+                            <td><span class="badge bg-success">Confirmed</span></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
