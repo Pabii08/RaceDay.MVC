@@ -14,7 +14,7 @@ Because this is a full-stack application, the code is split into two separate re
 - **Frontend:** ASP.NET Core 8 MVC, Bootstrap 5.
 - **Authentication:** Session-based with BCrypt password hashing.
 - **Containerization:** Docker & Docker Compose.
-- **CI/CD:** GitHub Actions.
+- **CI/CD:** GitHub Actions
 
 ---
 
