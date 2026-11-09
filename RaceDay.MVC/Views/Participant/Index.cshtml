@@ -1,7 +1,54 @@
-﻿<div class="container mt-4">
-    <h2 class="text-success">Participant Dashboard</h2>
-    <hr />
-    <div class="alert alert-info">
-        Welcome back, <strong>@Context.Session.GetString("UserName")</strong>! Find your next race here.
+﻿@model IEnumerable<RaceDay.MVC.Models.EventViewModel>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success mt-3">@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+        }
+        <h2 class="text-success">Upcoming Events</h2>
+        <span class="badge bg-success">Logged in as: @Context.Session.GetString("UserName")</span>
     </div>
+    <hr />
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning">No events have been created yet. Check back later!</div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var ev in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100 border-0">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">@ev.Name</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text text-muted">@ev.Description</p>
+                            <ul class="list-unstyled">
+                                <li><strong>Date:</strong> @ev.Date.ToString("dd MMM yyyy")</li>
+                                <li><strong>Location:</strong> @ev.Location</li>
+                                <li><strong>Distance:</strong> @ev.Distance km</li>
+                                <li><strong>Type:</strong> <span class="badge bg-primary">@ev.EventType</span></li>
+                            </ul>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <form asp-action="Enrol" method="post">
+                                <input type="hidden" name="eventId" value="@ev.EventId" />
+                                <!-- For now, we are hardcoding categoryId to 1 so it works instantly. We will improve this later. -->
+                                <input type="hidden" name="categoryId" value="1" />
+                                <button type="submit" class="btn btn-success w-100">Enrol Now</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>

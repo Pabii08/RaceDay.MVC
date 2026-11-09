@@ -1,7 +1,19 @@
 ﻿<div class="container mt-4">
-    <h2 class="text-danger">Organiser Dashboard</h2>
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="text-danger">Organiser Dashboard</h2>
+        <span class="badge bg-danger">Logged in as: @Context.Session.GetString("UserName")</span>
+    </div>
     <hr />
-    <div class="alert alert-info">
-        Welcome back, <strong>@Context.Session.GetString("UserName")</strong>! Manage your events here.
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center p-5">
+                    <h4>Ready to host a race?</h4>
+                    <p class="text-muted">Create a new event, add categories, and manage enrolments.</p>
+                    <a asp-action="CreateEvent" class="btn btn-danger btn-lg">Create New Event</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
